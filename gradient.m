@@ -28,10 +28,11 @@ L(find(L == 0)) = 0.0001;
 featureNum = size(F, 2); % number of features
 changeType = size(L, 2); % number of types of operations
 sentenceNum = size(F, 1); % number of sentences
-trainNum = round(sentenceNum * 0.70); % number of sentences for training
+trainNum = round(sentenceNum * 0.75); % number of sentences for training
 testNum = sentenceNum - trainNum;
 ita = 1e-6;  % convergence condition
-alpha = 0.0000008;  % stepsize
+alpha = 0.000008;  % stepsize
+alpha_fine = 0.0000008; % finer stepsize
 numRand = 5; % number of runs to compute random result 
 
 %% apply gradient descend solving the optimization problem
@@ -116,6 +117,12 @@ while flag == 1
             flag = 0;
         end
     end
+    
+    % change step size when approaching the optimal
+    if totalTrainKL < 5
+        alpha = alpha_fine;
+    end
+    
     n = n + 1;   
 end
 
@@ -144,7 +151,6 @@ for k = 1: numRand
     end
     totalRandKL(k) = randKL;
 end
-totalRandKL
 str = ['KL on testingn data using random gusess: ', ...
     num2str(mean(totalRandKL))];
 display(str);
