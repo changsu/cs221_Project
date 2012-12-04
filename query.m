@@ -5,8 +5,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [] = query(sentenceNum)
+
     global sentenceMap F L A;
     rowIndex = find(strcmp(sentenceMap(:,1), sentenceNum));
+    confidence = sentenceMap(rowIndex, 2);
     realValue = L(rowIndex,:)';
     estimatedValue = A*F(rowIndex, :)';
     Y = [realValue estimatedValue];
@@ -31,7 +33,8 @@ function [] = query(sentenceNum)
         KL = KL + estimatedValue(x)*log(estimatedValue(x)/realValue(x));
     end
     totalKL = totalKL + KL;
-    result = ['KL distance: ', num2str(totalKL)];
+    result = ['KL distance: ', num2str(totalKL), 'Confidence: ', ...
+        confidence];
     display(result);
     
 end

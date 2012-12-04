@@ -1,0 +1,1 @@
+Atyp	Pron	Unnamed	Neg	Rep	ManyClause	QDense	Ellipsis	Aggreg	EmbCond	containssize	containsshape	containsspatial	puresize	pureshape	purespatial	shapesize	shapespatial	sizespatial	shapesizespatial	containsunary	containsbinary	containsternary	pureunary	purebinary	pureternary	unaryandbinary	unaryandternary	binaryandternary	unarybinaryandternary
