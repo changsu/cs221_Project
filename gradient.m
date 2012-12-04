@@ -4,12 +4,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% constants
-featureNum = 4; % number of features
-changeType = 4; % number of types of operations
-sentenceNum = 5; % number of sentences
-trainNum = 5; % number of sentences used for training
+featureNum = 33; % number of features
+changeType = 7; % number of types of operations
+sentenceNum = 1000; % number of sentences
+trainNum = 1000; % number of sentences used for training
 ita = 1e-1;  % convergence condition
-alpha = 0.0008;  % step
+alpha = 0.0000008;  % step
 maxGradient = 1; % used to control element of A
 
 %%
@@ -42,26 +42,28 @@ while flag == 1
         for i = 1:changeType
             for j = 1:featureNum
                 
-                if f(i) == 0
+                if f(i) <= 0
                     tempA(i,j) = A(i,j);
                     continue
                 end
                 gradientAij = F(s,j)*log(f(i)/L(s,i)) + F(s,j);
                 gradientMatrix(i,j) = gradientAij;
-                if abs(gradientAij) > maxGradient
-                    maxGradient = abs(gradientAij);
-                end
+%                 if abs(gradientAij) > maxGradient
+%                     maxGradient = abs(gradientAij);
+%                 end
                 tempA(i,j) = A(i,j)- alpha * gradientAij;
+                if (tempA(i,j) < 0)
+                    tempA(i,j) = A(i,j);
+                end
             end
         end
         A = tempA;
     end
-    
     % afer updating A in one round
     totalKL = 0;
     for s1 = 1:sentenceNum
         KL = 0;
-        f_result = A * F(s1,:)'
+        f_result = A * F(s1,:)';
         for i1 = 1:changeType
             KL = KL + f_result(i1)*log(f_result(i1)/L(s1,i1));
         end
