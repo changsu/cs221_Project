@@ -3,27 +3,42 @@
 % optimization problem mentioned in the report
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% constants
-featureNum = 33; % number of features
-changeType = 7; % number of types of operations
-sentenceNum = 100; % number of sentences
-trainNum = 70; % number of sentences used for training
+
+%% read and pre-process files
+load feature_matrix.txt
+load label_independent.txt
+
+% chunk feature matrix to be consisitent with label matrix
+F = feature_matrix(1:size(label_independent, 1), :);
+L = label_independent;
+
+% remove all rows where feature/label sum up to 0
+zeroRowsF = find(all(F==0,2));
+zeroRowsL = find(all(L==0,2));
+zeroRows = [zeroRowsF;zeroRowsL];
+F(zeroRows, :) = [];
+L(zeroRows, :) = [];
+
+% approximate 0.0 in order KL can work
+L(find(L == 0)) = 0.0001; 
+
+% matrix
+
+%% declare constants
+featureNum = size(F, 2); % number of features
+changeType = size(L, 2); % number of types of operations
+sentenceNum = size(F, 1); % number of sentences
+trainNum = round(sentenceNum * 0.80); % number of sentences for training
 testNum = sentenceNum - trainNum;
 ita = 1e-6;  % convergence condition
 alpha = 0.000008;  % stepsize
 
-%%
+%% apply gradient descend solving the optimization problem
 
-% feature matrix with 1 or 0
-F = randi(2, sentenceNum, featureNum) - 1;
-
-% mapping matrix linear
+% initialize mapping matrix randomly
 A = rand(changeType, featureNum);
 
-% label matrix
-L = rand(sentenceNum, changeType);
-
-% result of KL number
+% store result of KL summation
 KLvecTrain = zeros(1,trainNum);
 KLvecTest = zeros(1, testNum);
 
@@ -38,14 +53,23 @@ while flag == 1
         tempA = zeros(changeType, featureNum);
         for i = 1:changeType
             for j = 1:featureNum
-                
-                if f(i) <= 0
+                % if f(i) <= 0, log (f(i)) will become complex number
+                % we do not change Aij in this case
+                if f(i) <= 0 || L(s,i) == 0
                     tempA(i,j) = A(i,j);
                     continue
                 end
+                % it is possible that L(s,i) == 0
                 gradientAij = F(s,j)*log(f(i)/L(s,i)) + F(s,j);
                 gradientMatrix(i,j) = gradientAij;
                 tempA(i,j) = A(i,j)- alpha * gradientAij;
+                
+                % if Aij is negative after updates, it is possible f(i)<0
+                % in next iteration, to avoid this, we do not change Aij
+                % it should be noted that even though we do not change Aij,
+                % converge rate will be decreased, however, the loss
+                % function still decreases and we can finally get the
+                % optimal
                 if (tempA(i,j) < 0)
                     tempA(i,j) = A(i,j);
                 end
@@ -76,8 +100,7 @@ while flag == 1
         end
         totalTrainKL = totalTrainKL + KL;
     end
-    totalTrainKL
-    
+    totalTrainKL   
     KLvecTrain(n) = totalTrainKL;
     
     if n > 1
@@ -92,10 +115,10 @@ while flag == 1
             flag = 0;
         end
     end
-    n = n + 1;
-    
-    
+    n = n + 1;   
 end
+
+%% Plot result
 x = 1 : 1 : size(KLvecTrain,2);
 y = 1 : 1 : size(KLvecTest,2);
 plot(x, KLvecTrain, 'b');
@@ -103,7 +126,7 @@ hold on;
 plot(y, KLvecTest, 'r');
 
 %%%%%%%%%% Print out final result %%%%%%%%%%
-ourResult = KLvecTest(1, end);
+ourResult = min(KLvecTest);
 str = ['KL on testingn data using algorithm: ', num2str(ourResult)];
 display(str);
 
