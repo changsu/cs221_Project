@@ -55,7 +55,8 @@ while flag == 1
         tempA = zeros(changeType, featureNum);
         for i = 1:changeType
             for j = 1:featureNum
-                % if f(i) <= 0, log (f(i)) will become complex number
+                % if f(i) <= 0 or L(s,i) == 0, 
+                % log (f(i)) will become complex number
                 % we do not change Aij in this case
                 if f(i) <= 0 || L(s,i) == 0
                     tempA(i,j) = A(i,j);
@@ -106,7 +107,7 @@ while flag == 1
     KLvecTrain(n) = totalTrainKL;
     
     if n > 1
-        % if kl < 0, we stop descending
+        % if kl <= 0, we stop descending
         if totalTrainKL <= 0
             flag = 0;
         end
