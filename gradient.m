@@ -9,9 +9,8 @@ changeType = 7; % number of types of operations
 sentenceNum = 100; % number of sentences
 trainNum = 70; % number of sentences used for training
 testNum = sentenceNum - trainNum;
-ita = 1e-1;  % convergence condition
+ita = 1e-6;  % convergence condition
 alpha = 0.000008;  % stepsize
-maxGradient = 1; % used to control element of A
 
 %%
 
@@ -89,7 +88,7 @@ while flag == 1
         
         %  if kl in two rounds of iteration are quite similar, stop
         %  descending
-        if abs(KLvecTrain(n-1)-KLvecTrain(n)) < 1e-6 
+        if abs(KLvecTrain(n-1)-KLvecTrain(n)) < ita
             flag = 0;
         end
     end
