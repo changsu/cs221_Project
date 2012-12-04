@@ -10,7 +10,7 @@ sentenceNum = 10; % number of sentences
 trainNum = 7; % number of sentences used for training
 testNum = sentenceNum - trainNum;
 ita = 1e-1;  % convergence condition
-alpha = 0.0000008;  % step
+alpha = 0.00000008;  % step
 maxGradient = 1; % used to control element of A
 
 %%
@@ -55,19 +55,6 @@ while flag == 1
         A = tempA;
     end
     
-    % after updating A in one round, calculate total KL in testing data
-    totalKL = 0;
-    for s1 = trainNum + 1 : sentenceNum
-        KL = 0;
-        f_result = A * F(s1,:)';
-        for i1 = 1:changeType
-            KL = KL + f_result(i1)*log(f_result(i1)/L(s1,i1));
-        end
-        totalKL = totalKL + KL;
-    end
-    
-    KLvecTest(n) = totalKL;
-    
     % afer updating A in one round, calculate total KL in training data
     totalKL = 0;
     for s1 = 1 : trainNum
@@ -81,6 +68,19 @@ while flag == 1
     totalKL
     
     KLvecTrain(n) = totalKL;
+    
+    totalKL = 0;
+    % after updating A in one round, calculate total KL in testing data
+    for s1 = trainNum + 1 : sentenceNum
+        KL = 0;
+        f_result = A * F(s1,:)';
+        for i1 = 1:changeType
+            KL = KL + f_result(i1)*log(f_result(i1)/L(s1,i1));
+        end
+        totalKL = totalKL + KL;
+    end
+    
+    KLvecTest(n) = totalKL;
     
     if n > 1
         % if kl < 0, we stop descending
