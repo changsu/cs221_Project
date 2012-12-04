@@ -28,10 +28,11 @@ L(find(L == 0)) = 0.0001;
 featureNum = size(F, 2); % number of features
 changeType = size(L, 2); % number of types of operations
 sentenceNum = size(F, 1); % number of sentences
-trainNum = round(sentenceNum * 0.80); % number of sentences for training
+trainNum = round(sentenceNum * 0.70); % number of sentences for training
 testNum = sentenceNum - trainNum;
 ita = 1e-6;  % convergence condition
-alpha = 0.000008;  % stepsize
+alpha = 0.0000008;  % stepsize
+numRand = 5; % number of runs to compute random result 
 
 %% apply gradient descend solving the optimization problem
 
@@ -131,16 +132,21 @@ str = ['KL on testingn data using algorithm: ', num2str(ourResult)];
 display(str);
 
 %% Evaluate random guess
-randKL = 0;
-L_rand = rand(sentenceNum, changeType);
-for n = trainNum + 1 : sentenceNum
-    KL = 0;
-    for x = 1:changeType
-        KL = KL + L_rand(n,x)*log(L_rand(n,x)/L(n,x));
+for k = 1: numRand
+    randKL = 0;
+    L_rand = rand(sentenceNum, changeType);
+    for n = trainNum + 1 : sentenceNum
+        KL = 0;
+        for x = 1:changeType
+            KL = KL + L_rand(n,x)*log(L_rand(n,x)/L(n,x));
+        end
+        randKL = randKL + KL;
     end
-    randKL = randKL + KL;
+    totalRandKL(k) = randKL;
 end
-str = ['KL on testingn data using random gusess: ', num2str(randKL)];
+totalRandKL
+str = ['KL on testingn data using random gusess: ', ...
+    num2str(mean(totalRandKL))];
 display(str);
 
 
