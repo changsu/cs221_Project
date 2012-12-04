@@ -4,13 +4,26 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-%% read and pre-process files
+%% read and pre-process feature and label files
 load feature_matrix.txt
 load label_independent.txt
+
+%% declare global variables used in query.m
+global sentenceMap F L A;
 
 % chunk feature matrix to be consisitent with label matrix
 F = feature_matrix(1:size(label_independent, 1), :);
 L = label_independent;
+
+% build sentence number map
+fid = fopen('sentence_map.txt');
+sentenceMap = [];
+for i = 1 : size(F,1)
+    line = fgetl(fid);
+    [sentenceNum totalScript] = strread(line, '%s %d', 'delimiter', ' \t');
+    sentenceMap = [sentenceMap; sentenceNum totalScript];
+end
+fclose(fid);
 
 % remove all rows where feature/label sum up to 0
 zeroRowsF = find(all(F==0,2));
@@ -18,16 +31,19 @@ zeroRowsL = find(all(L==0,2));
 zeroRows = [zeroRowsF;zeroRowsL];
 F(zeroRows, :) = [];
 L(zeroRows, :) = [];
+sentenceMap(zeroRows, :) = [];
 
 % approximate 0.0 in order KL can work
-L(find(L == 0)) = 0.0001; 
+L(find(L == 0)) = 0.0001;
 
 % shuffle the rows to fully test the method
 FL = [F L];
-FL = FL(randperm(size(FL, 1)), :);
+randIndex = randperm(size(FL, 1));
+FL = FL(randIndex, :);
 F = FL(:, 1:size(F,2));
 seperator = size(F,2) + 1;
 L = FL(:, seperator : seperator + size(L,2) - 1);
+sentenceMap = sentenceMap(randIndex, :);
 
 %% declare constants
 featureNum = size(F, 2); % number of features
@@ -77,7 +93,7 @@ while flag == 1
                 % it should be noted that even though we do not change Aij,
                 % converge rate will be decreased, however, the loss
                 % function still decreases and we can finally get the
-                % optimal
+                % optimal solution
                 if (tempA(i,j) < 0)
                     tempA(i,j) = A(i,j);
                 end
