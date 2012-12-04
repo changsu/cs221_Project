@@ -4,13 +4,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% constants
-featureNum = 33; % number of features
+featureNum = 10; % number of features
 changeType = 7; % number of types of operations
-sentenceNum = 100; % number of sentences
-trainNum = 70; % number of sentences used for training
+sentenceNum = 10; % number of sentences
+trainNum = 7; % number of sentences used for training
 testNum = sentenceNum - trainNum;
 ita = 1e-1;  % convergence condition
-alpha = 0.000008;  % stepsize
+alpha = 0.0000008;  % stepsize
 maxGradient = 1; % used to control element of A
 
 %%
@@ -99,28 +99,11 @@ while flag == 1
 end
 x = 1 : 1 : size(KLvecTrain,2);
 y = 1 : 1 : size(KLvecTest,2);
-plot(x, KLvecTrain, 'b');
+plot(x, KLvecTrain, 'b')
 hold on;
 plot(y, KLvecTest, 'r');
+A
 
-%%%%%%%%%% Print out final result %%%%%%%%%%
-ourResult = KLvecTest(1, end);
-str = ['KL on testingn data using algorithm: ', num2str(ourResult)];
-display(str);
-
-%% Evaluate random guess
-randKL = 0;
-L_rand = rand(sentenceNum, changeType);
-for n = trainNum + 1 : sentenceNum
-    KL = 0;
-    for x = 1:changeType
-        KL = KL + L_rand(n,x)*log(L_rand(n,x)/L(n,x));
-    end
-    randKL = randKL + KL;
-end
-str = ['KL on testingn data using random gusess: ', num2str(randKL)];
-display(str);
-
-
+        
     
 
