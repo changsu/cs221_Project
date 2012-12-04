@@ -6,8 +6,8 @@
 %% constants
 featureNum = 33; % number of features
 changeType = 7; % number of types of operations
-sentenceNum = 1000; % number of sentences
-trainNum = 1000; % number of sentences used for training
+sentenceNum = 100; % number of sentences
+trainNum = 70; % number of sentences used for training
 ita = 1e-1;  % convergence condition
 alpha = 0.0000008;  % step
 maxGradient = 1; % used to control element of A
@@ -34,10 +34,6 @@ n = 1;
 while flag == 1
     for s = 1:sentenceNum
         f = A * F(s,:)';
-%         for idx=1:changeType
-%             sumValue = sum(f);
-%             f = f/sumValue;
-%         end
         tempA = zeros(changeType, featureNum);
         for i = 1:changeType
             for j = 1:featureNum
@@ -48,9 +44,6 @@ while flag == 1
                 end
                 gradientAij = F(s,j)*log(f(i)/L(s,i)) + F(s,j);
                 gradientMatrix(i,j) = gradientAij;
-%                 if abs(gradientAij) > maxGradient
-%                     maxGradient = abs(gradientAij);
-%                 end
                 tempA(i,j) = A(i,j)- alpha * gradientAij;
                 if (tempA(i,j) < 0)
                     tempA(i,j) = A(i,j);
