@@ -22,13 +22,18 @@ L(zeroRows, :) = [];
 % approximate 0.0 in order KL can work
 L(find(L == 0)) = 0.0001; 
 
-% matrix
+% shuffle the rows to fully test the method
+FL = [F L];
+FL = FL(randperm(size(FL, 1)), :);
+F = FL(:, 1:size(F,2));
+seperator = size(F,2) + 1;
+L = FL(:, seperator : seperator + size(L,2) - 1);
 
 %% declare constants
 featureNum = size(F, 2); % number of features
 changeType = size(L, 2); % number of types of operations
 sentenceNum = size(F, 1); % number of sentences
-trainNum = round(sentenceNum * 0.75); % number of sentences for training
+trainNum = round(sentenceNum * 0.7); % number of sentences for training
 testNum = sentenceNum - trainNum;
 ita = 1e-6;  % convergence condition
 alpha = 0.000008;  % stepsize
