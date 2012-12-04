@@ -36,8 +36,8 @@ sentenceNum = size(F, 1); % number of sentences
 trainNum = round(sentenceNum * 0.7); % number of sentences for training
 testNum = sentenceNum - trainNum;
 ita = 1e-6;  % convergence condition
-alpha = 0.000008;  % stepsize
-alpha_fine = 0.0000008; % finer stepsize
+alpha = 8e-6;  % stepsize
+alpha_fine = 8e-7; % finer stepsize
 numRand = 5; % number of runs to compute random result 
 
 %% apply gradient descend solving the optimization problem
