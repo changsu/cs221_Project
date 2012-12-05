@@ -9,8 +9,9 @@ function [] = query(sentenceNum)
     global sentenceMap F L A;
     rowIndex = find(strcmp(sentenceMap(:,1), sentenceNum));
     confidence = sentenceMap(rowIndex, 2);
-    realValue = L(rowIndex,:)';
-    estimatedValue = A*F(rowIndex, :)';
+    realValue = L(rowIndex,:)'
+    estimatedValue = A*F(rowIndex, :)'
+    sum(estimatedValue)
     Y = [realValue estimatedValue];
     %% plot basic bars
     subplot(2,1,1);
