@@ -102,7 +102,7 @@ while flag == 1
         MSE = norm((f_result - L(s1,:)'),2);
         totalTestMSE = totalTestMSE + MSE;
     end
-    MSEvecTest(n) = totalTestMSE;
+    MSEvecTest(n) = totalTestMSE/(sentenceNum - trainNum);
     
     % afer updating A in one round, calculate total KL in training data
     totalTrainMSE = 0;
@@ -111,7 +111,7 @@ while flag == 1
         MSE = norm((f_result - L(s1,:)'),2);
         totalTrainMSE = totalTrainMSE + MSE;
     end
-    totalTrainMSE   
+    totalTrainMSE = totalTrainMSE / (trainNum)
     MSEvecTrain(n) = totalTrainMSE;
     
     if n > 1
@@ -150,7 +150,7 @@ for k = 1: numRand
         MSE = norm((L_rand(n,:) - L(n,:)),2);
         randMSE = randMSE + MSE;
     end
-    totalRandMSE(k) = randMSE;
+    totalRandMSE(k) = randMSE / (sentenceNum - trainNum);
 end
 str = ['KL on testingn data using random gusess: ', ...
     num2str(mean(totalRandMSE))];

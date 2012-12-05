@@ -6,14 +6,14 @@
 
 %% read and pre-process feature and label files
 load feature_matrix.txt
-load label_independent.txt
+load label_dependent.txt
 
 %% declare global variables used in query.m
 global sentenceMap F L A;
 
 % chunk feature matrix to be consisitent with label matrix
-F = feature_matrix(1:size(label_independent, 1), :);
-L = label_independent;
+F = feature_matrix(1:size(label_dependent, 1), :);
+L = label_dependent;
 
 % build sentence number map
 fid = fopen('sentence_map.txt');
@@ -52,10 +52,9 @@ sentenceNum = size(F, 1); % number of sentences
 trainNum = round(sentenceNum * 0.7); % number of sentences for training
 testNum = sentenceNum - trainNum;
 ita = 5e-5;  % convergence condition
-alpha = 8e-6;  % stepsize
+alpha = 8e-3;  % stepsize
 alpha_fine = 8e-7; % finer stepsize
 numRand = 5; % number of runs to compute random result
-lamada = 3.5e-1; % regularization parameter
 
 %% apply gradient descend solving the optimization problem
 
@@ -74,6 +73,7 @@ n = 1;
 while flag == 1
     for s = 1:trainNum
         f = A * F(s,:)';
+        numerator = sum(f);
         tempA = zeros(changeType, featureNum);
         for i = 1:changeType
             for j = 1:featureNum
@@ -85,9 +85,20 @@ while flag == 1
                     continue
                 end
                 % it is possible that L(s,i) == 0
-                regularization = 2 * f(i) * F(s,j);
-                gradientAij = F(s,j)*log(f(i)/L(s,i)) + F(s,j) - ...
-                    lamada * regularization;
+%                 gradientAij = F(s,j)*log(f(i)/L(s,i)) + F(s,j);
+                selfItem = (F(s, j) * numerator - f(i) * F(s,j)) / ...
+                    (numerator ^ 2) * (log(f(i) / numerator / L(s,i)) + 1); 
+                otherItem = 0;
+                for k = 1:changeType 
+                    if k == i
+                        continue
+                    end
+                    otherItem = otherItem + (0-f(k)*F(s,j))/ ...
+                        (numerator ^ 2) * (log(f(k)/numerator/L(s,k)) + 1);
+                        
+                end
+                
+                gradientAij = selfItem + otherItem;
                 gradientMatrix(i,j) = gradientAij;
                 tempA(i,j) = A(i,j)- alpha * gradientAij;
                 
@@ -110,10 +121,12 @@ while flag == 1
     for s1 = trainNum + 1 : sentenceNum
         KL = 0;
         f_result = A * F(s1,:)';
+        numerator = sum(f_result);
         for i1 = 1:changeType
-            KL = KL + f_result(i1)*log(f_result(i1)/L(s1,i1));
+            KL = KL + f_result(i1)/numerator * ...
+                log(f_result(i1)/numerator/L(s1,i1));
         end
-        totalTestKL = totalTestKL + KL - lamada * norm(f_result,2);
+        totalTestKL = totalTestKL + KL;
     end
     KLvecTest(n) = totalTestKL;
     
@@ -122,10 +135,12 @@ while flag == 1
     for s1 = 1 : trainNum
         KL = 0;
         f_result = A * F(s1,:)';
+        numerator = sum(f_result);
         for i1 = 1:changeType
-            KL = KL + f_result(i1)*log(f_result(i1)/L(s1,i1));
+            KL = KL + f_result(i1)/numerator * ...
+                log(f_result(i1)/numerator/L(s1,i1));
         end
-        totalTrainKL = totalTrainKL + KL - lamada * norm(f_result,2);
+        totalTrainKL = totalTrainKL + KL;
     end
     totalTrainKL   
     KLvecTrain(n) = totalTrainKL;
@@ -169,17 +184,20 @@ for k = 1: numRand
     L_rand = rand(sentenceNum, changeType);
     for n = trainNum + 1 : sentenceNum
         KL = 0;
+        f_result = L_rand(n,:)';
+        numerator = sum(f_result);
         for x = 1:changeType
-            KL = KL + L_rand(n,x)*log(L_rand(n,x)/L(n,x));
+            KL = KL + f_result(x)/numerator * ...
+                log(f_result(x)/numerator/L(n,x));
         end
-        randKL = randKL + KL - lamada * norm(L_rand,2);
+        randKL = randKL + KL;
     end
     totalRandKL(k) = randKL;
 end
 str = ['KL on testingn data using random gusess: ', ...
     num2str(mean(totalRandKL))];
 display(str);
-sentenceMap
+
 
     
 
