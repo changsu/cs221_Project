@@ -51,8 +51,8 @@ changeType = size(L, 2); % number of types of operations
 sentenceNum = size(F, 1); % number of sentences
 trainNum = round(sentenceNum * 0.7); % number of sentences for training
 testNum = sentenceNum - trainNum;
-ita = 1e-6;  % convergence condition
-alpha = 8e-6;  % stepsize
+ita = 1e-4;  % convergence condition
+alpha = 8e-5;  % stepsize
 alpha_fine = 8e-7; % finer stepsize
 numRand = 5; % number of runs to compute random result 
 
@@ -62,8 +62,8 @@ numRand = 5; % number of runs to compute random result
 A = rand(changeType, featureNum);
 
 % store result of KL summation
-KLvecTrain = zeros(1,trainNum);
-KLvecTest = zeros(1, testNum);
+MSEvecTrain = zeros(1,trainNum);
+MSEvecTest = zeros(1, testNum);
 
 % used for updating mapping matrix A
 gradientMatrix = zeros(changeType, featureNum);
@@ -76,15 +76,8 @@ while flag == 1
         tempA = zeros(changeType, featureNum);
         for i = 1:changeType
             for j = 1:featureNum
-                % if f(i) <= 0 or L(s,i) == 0, 
-                % log (f(i)) will become complex number
-                % we do not change Aij in this case
-                if f(i) <= 0 || L(s,i) == 0
-                    tempA(i,j) = A(i,j);
-                    continue
-                end
                 % it is possible that L(s,i) == 0
-                gradientAij = F(s,j)*log(f(i)/L(s,i)) + F(s,j);
+                gradientAij = 2 * (f(i) - L(s,i)) * F(s,j);
                 gradientMatrix(i,j) = gradientAij;
                 tempA(i,j) = A(i,j)- alpha * gradientAij;
                 
@@ -103,78 +96,64 @@ while flag == 1
     end
     
     % after updating A in one round, calculate total KL in testing data
-    totalTestKL = 0;
+    totalTestMSE = 0;
     for s1 = trainNum + 1 : sentenceNum
-        KL = 0;
         f_result = A * F(s1,:)';
-        for i1 = 1:changeType
-            KL = KL + f_result(i1)*log(f_result(i1)/L(s1,i1));
-        end
-        totalTestKL = totalTestKL + KL;
+        MSE = norm((f_result - L(s1,:)'),2);
+        totalTestMSE = totalTestMSE + MSE;
     end
-    KLvecTest(n) = totalTestKL;
+    MSEvecTest(n) = totalTestMSE;
     
     % afer updating A in one round, calculate total KL in training data
-    totalTrainKL = 0;
+    totalTrainMSE = 0;
     for s1 = 1 : trainNum
-        KL = 0;
         f_result = A * F(s1,:)';
-        for i1 = 1:changeType
-            KL = KL + f_result(i1)*log(f_result(i1)/L(s1,i1));
-        end
-        totalTrainKL = totalTrainKL + KL;
+        MSE = norm((f_result - L(s1,:)'),2);
+        totalTrainMSE = totalTrainMSE + MSE;
     end
-    totalTrainKL   
-    KLvecTrain(n) = totalTrainKL;
+    totalTrainMSE   
+    MSEvecTrain(n) = totalTrainMSE;
     
     if n > 1
-        % if kl <= 0, we stop descending
-        if totalTrainKL <= 0
-            flag = 0;
-        end
-        
         %  if kl in two rounds of iteration are quite similar, stop
         %  descending
-        if abs(KLvecTrain(n-1)-KLvecTrain(n)) < ita
+        if abs(MSEvecTrain(n-1)-MSEvecTrain(n)) < ita
             flag = 0;
         end
     end
     
     % change step size when approaching the optimal
-    if totalTrainKL < 5
-        alpha = alpha_fine;
-    end
+%     if totalTrainMSE < 5
+%         alpha = alpha_fine;
+%     end
     
     n = n + 1;   
 end
 
 %% Plot result
-x = 1 : 1 : size(KLvecTrain,2);
-y = 1 : 1 : size(KLvecTest,2);
-plot(x, KLvecTrain, 'b');
+x = 1 : 1 : size(MSEvecTrain,2);
+y = 1 : 1 : size(MSEvecTest,2);
+plot(x, MSEvecTrain, 'b');
 hold on;
-plot(y, KLvecTest, 'r');
+plot(y, MSEvecTest, 'r');
 
 %%%%%%%%%% Print out final result %%%%%%%%%%
-ourResult = min(KLvecTest);
+ourResult = min(MSEvecTest);
 str = ['KL on testingn data using algorithm: ', num2str(ourResult)];
 display(str);
 
 %% Evaluate random guess
 for k = 1: numRand
-    randKL = 0;
+    randMSE = 0;
     L_rand = rand(sentenceNum, changeType);
     for n = trainNum + 1 : sentenceNum
-        KL = 0;
-        for x = 1:changeType
-            KL = KL + L_rand(n,x)*log(L_rand(n,x)/L(n,x));
-        end
-        randKL = randKL + KL;
+        MSE = norm((L_rand(n,:) - L(n,:)),2);
+        randMSE = randMSE + MSE;
     end
-    totalRandKL(k) = randKL;
+    totalRandMSE(k) = randMSE;
 end
 str = ['KL on testingn data using random gusess: ', ...
-    num2str(mean(totalRandKL))];
+    num2str(mean(totalRandMSE))];
 display(str);
 
 

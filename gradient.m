@@ -51,11 +51,11 @@ changeType = size(L, 2); % number of types of operations
 sentenceNum = size(F, 1); % number of sentences
 trainNum = round(sentenceNum * 0.7); % number of sentences for training
 testNum = sentenceNum - trainNum;
-ita = 1e-6;  % convergence condition
+ita = 5e-5;  % convergence condition
 alpha = 8e-6;  % stepsize
 alpha_fine = 8e-7; % finer stepsize
 numRand = 5; % number of runs to compute random result
-lamada = 3e-1; % regularization parameter
+lamada = 3.5e-1; % regularization parameter
 
 %% apply gradient descend solving the optimization problem
 
@@ -132,7 +132,7 @@ while flag == 1
     
     if n > 1
         % if kl <= 0, we stop descending
-        if totalTrainKL <= 0
+        if totalTrainKL <= 0;
             flag = 0;
         end
         
