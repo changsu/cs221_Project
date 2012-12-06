@@ -4,15 +4,18 @@
 %%% To run the query, you must run "gradient.m" first
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [] = query(sentenceNum)
+function [] = query(sentenceNum, method)
 
     global sentenceMap F L A;
 
     rowIndex = find(strcmp(sentenceMap(:,1), sentenceNum));
     confidence = sentenceMap(rowIndex, 2);
     realValue = L(rowIndex,:)'
-    estimatedValue = A*F(rowIndex, :)';
-    estimatedValue = estimatedValue/sum(estimatedValue)
+    estimatedValue = A*F(rowIndex, :)'
+    % if it's kl method, we need to normalize to get the final result
+    if (strcmp(method, 'kl'))
+        estimatedValue = estimatedValue/sum(estimatedValue)
+    end
     Y = [realValue estimatedValue];
     %% plot basic bars
     subplot(2,1,1);
@@ -35,8 +38,10 @@ function [] = query(sentenceNum)
         KL = KL + estimatedValue(x)*log(estimatedValue(x)/realValue(x));
     end
     totalKL = totalKL + KL;
-    result = ['KL distance: ', num2str(totalKL), 'Confidence: ', ...
-        confidence];
+    if (strcmp(method, 'kl'))
+        result = ['KL distance: ', num2str(totalKL), 'Confidence: ', ...
+            confidence];
+    end
     display(result);
     
 end

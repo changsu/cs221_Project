@@ -155,6 +155,8 @@ end
 str = ['KL on testingn data using random gusess: ', ...
     num2str(mean(totalRandMSE))];
 display(str);
+sentenceMap(trainNum + 1 : sentenceNum,:)
+
 
 
     
