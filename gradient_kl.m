@@ -9,7 +9,10 @@ load feature_matrix.txt
 load label_dependent.txt
 
 %% declare global variables used in query.m
-global sentenceMap F L A;
+global sentenceMap F L A method;
+
+% set method
+method = 'kl';
 
 % chunk feature matrix to be consisitent with label matrix
 F = feature_matrix(1:size(label_dependent, 1), :);
@@ -175,7 +178,7 @@ plot(y, KLvecTest, 'r');
 
 %%%%%%%%%% Print out final result %%%%%%%%%%
 ourResult = min(KLvecTest);
-str = ['KL on testingn data using algorithm: ', num2str(ourResult)];
+str = ['Loss Function on testingn data using KL method: ', num2str(ourResult)];
 display(str);
 
 %% Evaluate random guess
@@ -194,7 +197,7 @@ for k = 1: numRand
     end
     totalRandKL(k) = randKL;
 end
-str = ['KL on testingn data using random gusess: ', ...
+str = ['Loss Function on testingn data using random gusess: ', ...
     num2str(mean(totalRandKL))];
 display(str);
 sentenceMap(trainNum + 1 : sentenceNum,:)

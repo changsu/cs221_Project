@@ -4,9 +4,9 @@
 %%% To run the query, you must run "gradient.m" first
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [] = query(sentenceNum, method)
+function [] = query(sentenceNum)
 
-    global sentenceMap F L A;
+    global sentenceMap F L A method;
 
     rowIndex = find(strcmp(sentenceMap(:,1), sentenceNum));
     confidence = sentenceMap(rowIndex, 2);
@@ -15,7 +15,7 @@ function [] = query(sentenceNum, method)
     % if it's kl method, we need to normalize to get the final result
     if (strcmp(method, 'kl'))
         estimatedValue = A*F(rowIndex, :)'/sum(A*F(rowIndex, :)')
-    elseif(strcmp(method, 'rl'))
+    elseif(strcmp(method, 'lr'))
         estimatedValue = A*F(rowIndex, :)'
     else
         error('Usage: query(sentenceNumber, method) where method is rl or kl');

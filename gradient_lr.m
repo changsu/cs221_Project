@@ -9,7 +9,10 @@ load feature_matrix.txt
 load label_independent.txt
 
 %% declare global variables used in query.m
-global sentenceMap F L A;
+global sentenceMap F L A method;
+
+% set method
+method = 'lr';
 
 % chunk feature matrix to be consisitent with label matrix
 F = feature_matrix(1:size(label_independent, 1), :);
@@ -102,7 +105,7 @@ while flag == 1
         MSE = norm((f_result - L(s1,:)'),2);
         totalTestMSE = totalTestMSE + MSE;
     end
-    totalTestMSE = totalTestMSE/(sentenceNum - trainNum)
+    totalTestMSE = totalTestMSE/(sentenceNum - trainNum);
     MSEvecTest(n) = totalTestMSE;
     
     % afer updating A in one round, calculate total KL in training data
@@ -139,26 +142,9 @@ hold on;
 plot(y, MSEvecTest, 'r');
 
 %%%%%%%%%% Print out final result %%%%%%%%%%
-ourResult = min(MSEvecTest);
-str = ['KL on testingn data using algorithm: ', num2str(ourResult)];
+str = ['MSE on training data using RL: ', num2str(min(MSEvecTrain))];
+display(str);
+str = ['MSE on testing data using RL: ', num2str(min(MSEvecTest))];
 display(str);
 
-%% Evaluate random guess
-for k = 1: numRand
-    randMSE = 0;
-    L_rand = rand(sentenceNum, changeType);
-    for n = trainNum + 1 : sentenceNum
-        MSE = norm((L_rand(n,:) - L(n,:)),2);
-        randMSE = randMSE + MSE;
-    end
-    totalRandMSE(k) = randMSE / (sentenceNum - trainNum);
-end
-str = ['KL on testingn data using random gusess: ', ...
-    num2str(mean(totalRandMSE))];
-display(str);
-sentenceMap(trainNum + 1 : sentenceNum,:)
-
-
-
-    
-
+querySentencesPool = sentenceMap(trainNum + 1:sentenceNum,:)
