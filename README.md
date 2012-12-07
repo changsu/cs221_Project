@@ -120,7 +120,9 @@ result =
 
 
 #### File Structures
-`feature_matrix.txt` - 268 * 30 matrix with row as sentence column as features
+<ul>
+<li>`feature_matrix.txt` - 268 * 30 matrix with row as sentence column as features</li>
+</ul>
 `feature_name.txt` - 30 dimension vector that store name of each features
 `label_dependent.txt` - 162 * 7 matrix with row as each sentence column as error type probabilities. For each row, all columns reflects the distribution of error types, thus summing up to 1
 `label_independent.txt` - 162 * 7 matrix with row as each sentence, column as error type probabilities. However, it's differenct from `label_dependent.txt` file in a sense that there is no constraint among columns for a particular row and they are independent with each other. 
