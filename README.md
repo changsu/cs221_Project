@@ -5,8 +5,8 @@ CS221 Final Project Documentation
 <li>Chang Su (changsu@stanford.edu)</li>
 </ul>
 
-### How To Run
-#### Linear Regression
+### Methods
+#### 1. Linear Regression
 
 <b>Start the program</b>
 <pre>run gradient_lr</pre>
@@ -65,7 +65,7 @@ result =
 Here we show ground truth value and predicted value and also their norm2 distance and our confidence in the prediction based on # of scripts generated from the sentence. 
 In addition, we also visualize the result using bar graph.
 
-#### KL Optimization Method
+#### 2. KL Optimization Method
 <b>Star the program</b>
 <pre>run gradient_kl</pre>
 
