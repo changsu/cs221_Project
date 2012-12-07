@@ -1,7 +1,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% This function is used to support user query based on a particular
-%%% sentence and return KL distance, plot distribution graphs
-%%% To run the query, you must run "gradient.m" first
+%%% sentence and return KL or LR result, plot distribution graphs
+%%% To run the query, you must run "gradient_kl.m" or "gradient_lr.m"
+%%% firstly
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [] = query(sentenceNum)
