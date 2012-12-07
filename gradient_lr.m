@@ -142,9 +142,10 @@ hold on;
 plot(y, MSEvecTest, 'r');
 
 %%%%%%%%%% Print out final result %%%%%%%%%%
-str = ['MSE on training data using RL: ', num2str(min(MSEvecTrain))];
-display(str);
-str = ['MSE on testing data using RL: ', num2str(min(MSEvecTest))];
-display(str);
+MSE_Train = ['MSE on training data using RL: ', num2str(min(MSEvecTrain))];
+display(MSE_Train);
+MSE_Test = ['MSE on testing data using RL: ', num2str(min(MSEvecTest))];
+display(MSE_Test);
 
+% display available testing sentences number
 querySentencesPool = sentenceMap(trainNum + 1:sentenceNum,:)

@@ -177,9 +177,9 @@ hold on;
 plot(y, KLvecTest, 'r');
 
 %%%%%%%%%% Print out final result %%%%%%%%%%
-ourResult = min(KLvecTest);
-str = ['Loss Function on testingn data using KL method: ', num2str(ourResult)];
-display(str);
+Loss_KL = ['Loss Function on testingn data using KL method: ', ...
+    num2str(min(KLvecTest))];
+display(Loss_KL);
 
 %% Evaluate random guess
 for k = 1: numRand
@@ -197,10 +197,12 @@ for k = 1: numRand
     end
     totalRandKL(k) = randKL;
 end
-str = ['Loss Function on testingn data using random gusess: ', ...
+Loss_rand = ['Loss Function on testingn data using random gusess: ', ...
     num2str(mean(totalRandKL))];
-display(str);
-sentenceMap(trainNum + 1 : sentenceNum,:)
+display(Loss_rand);
+
+% display available testing sentences number
+querySentencesPool = sentenceMap(trainNum + 1 : sentenceNum,:)
 
     
 
