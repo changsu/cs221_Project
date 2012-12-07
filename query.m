@@ -11,10 +11,14 @@ function [] = query(sentenceNum, method)
     rowIndex = find(strcmp(sentenceMap(:,1), sentenceNum));
     confidence = sentenceMap(rowIndex, 2);
     realValue = L(rowIndex,:)'
-    estimatedValue = A*F(rowIndex, :)'
+    
     % if it's kl method, we need to normalize to get the final result
     if (strcmp(method, 'kl'))
-        estimatedValue = estimatedValue/sum(estimatedValue)
+        estimatedValue = A*F(rowIndex, :)'/sum(A*F(rowIndex, :)')
+    elseif(strcmp(method, 'mse'))
+        estimatedValue = A*F(rowIndex, :)'
+    else
+        error('Usage: query(sentenceNumber, method) where method is mse or kl');
     end
     Y = [realValue estimatedValue];
     %% plot basic bars
@@ -41,6 +45,10 @@ function [] = query(sentenceNum, method)
     if (strcmp(method, 'kl'))
         result = ['KL distance: ', num2str(totalKL), 'Confidence: ', ...
             confidence];
+    else
+        result = ['norm2 distance: ', ...
+            num2str(norm(realValue - estimatedValue),2), ...
+            'Confidence: ', confidence];
     end
     display(result);
     
