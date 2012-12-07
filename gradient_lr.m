@@ -125,12 +125,7 @@ while flag == 1
             flag = 0;
         end
     end
-    
-    % change step size when approaching the optimal
-%     if totalTrainMSE < 5
-%         alpha = alpha_fine;
-%     end
-    
+
     n = n + 1;   
 end
 
@@ -147,5 +142,5 @@ display(MSE_Train);
 MSE_Test = ['MSE on testing data using RL: ', num2str(min(MSEvecTest))];
 display(MSE_Test);
 
-% display available testing sentences number
+% display available testing sentences
 querySentencesPool = sentenceMap(trainNum + 1:sentenceNum,:)
