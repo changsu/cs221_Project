@@ -120,6 +120,12 @@ result =
 
 
 #### File Structures
+`gradient_lr.m` - code that implements the linear regression method
+
+`gradient_kl.m` - code that implements the KL optimization method
+
+`query.m` - code that supports query based on sentence number
+
 `feature_matrix.txt` - 268 * 30 matrix with row as sentence column as features
 
 `feature_name.txt` - 30 dimension vector that store name of each features
