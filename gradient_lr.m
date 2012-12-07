@@ -102,7 +102,8 @@ while flag == 1
         MSE = norm((f_result - L(s1,:)'),2);
         totalTestMSE = totalTestMSE + MSE;
     end
-    MSEvecTest(n) = totalTestMSE/(sentenceNum - trainNum);
+    totalTestMSE = totalTestMSE/(sentenceNum - trainNum)
+    MSEvecTest(n) = totalTestMSE;
     
     % afer updating A in one round, calculate total KL in training data
     totalTrainMSE = 0;

@@ -15,24 +15,24 @@ function [] = query(sentenceNum, method)
     % if it's kl method, we need to normalize to get the final result
     if (strcmp(method, 'kl'))
         estimatedValue = A*F(rowIndex, :)'/sum(A*F(rowIndex, :)')
-    elseif(strcmp(method, 'mse'))
+    elseif(strcmp(method, 'rl'))
         estimatedValue = A*F(rowIndex, :)'
     else
-        error('Usage: query(sentenceNumber, method) where method is mse or kl');
+        error('Usage: query(sentenceNumber, method) where method is rl or kl');
     end
     Y = [realValue estimatedValue];
     %% plot basic bars
     subplot(2,1,1);
     bar(Y);
     set(gca, 'XTickLabel', {'del', 'ins', 'r_const', 'r_pred', ...
-        'r_conn', 'r_mix', 'move'});
+        'r_conn', 'r_mix', 'permute'});
     
     %% plot difference
     subplot(2,1,2);
     diffY = Y(:,1) - Y(:,2);
     bar(diffY, 'g');
     set(gca, 'XTickLabel', {'del', 'ins', 'r_const', 'r_pred', ...
-        'r_conn', 'r_mix', 'move'});
+        'r_conn', 'r_mix', 'permute'});
     
     %% calculate KL distance and log
     totalKL = 0;
