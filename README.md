@@ -138,10 +138,4 @@ result =
 
 `sample_kl.fig` - query result figure of KL method
 
-`sample_lr.fig` - query result figure of LR method		
-		      			  
-
-
-
-
-
+`sample_lr.fig` - query result figure of LR method
