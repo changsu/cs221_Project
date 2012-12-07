@@ -8,10 +8,10 @@ CS221 Final Project Documentation
 ### How To Run
 #### Linear Regression
 
-1. Start the program
+<b>Start the program</b>
 <pre>run gradient_lr</pre>
 
-2. Result logging
+<b>Result logging</b>
 <pre>
 MSE_Train =
 MSE on training data using RL: 0.48753
@@ -30,13 +30,15 @@ We output mean squared error (MSE) of linear regression on training data and tes
 seperately and also output pool of sentences that can be used for query. These sentences are the testing sentences that the model has never "seen" before
 In addition, we also draw the learning curve of traning iterations vs mse similar to figure `learning_curve_lr.fig`
 
-3. Query
+<b>Query</b>
+
 After running the algorithm, we have generate a linear model ready for prediction. 
 We can choose any sentence number in querySentencePool and issue the query using the cmd
 <pre>query('9.17.2')</pre>
 Then you will see result similar as below
 <pre>
 realValue =
+
     0.6829
     0.5371
     0.2839
@@ -46,6 +48,7 @@ realValue =
     0.2506
 
 estimatedValue =
+
     0.4005
     0.3774
     0.4736
@@ -56,15 +59,17 @@ estimatedValue =
 
 result = 
     'norm2 distance: '    '0.5'    'Confidence: '    [391]
+
 </pre>
+
 Here we show ground truth value and predicted value and also their norm2 distance and our confidence in the prediction based on # of scripts generated from the sentence. 
 In addition, we also visualize the result using bar graph.
 
 #### KL Optimization Method
-1. Star the program 
+<b>Star the program</b>
 <pre>run gradient_kl</pre>
 
-2. Result Logging
+<b>Result Logging</b>
 <pre>
 Loss_KL =
 Loss Function on testingn data using KL method: 4.4625
@@ -79,14 +84,16 @@ querySentencesPool =
     ...
     ...
 </pre>
+
 Here, we output Loss function on testing data using KL method and random guess respectively and also pool of sentences used for query
 In addition, we also generate learning curves of the KL method iterations vs loss function
 
-3. Query
+<b>Query</b>
 Similarly to the linear regression method, after running KL-method, we can also issue queries for prediction.
 Then we will generate result similar to this:
 <pre>
 realValue =
+
     0.2101
     0.2502
     0.1366
@@ -96,6 +103,7 @@ realValue =
     0.0735
 
 estimatedValue =
+
     0.1572
     0.2248
     0.1084
@@ -104,9 +112,11 @@ estimatedValue =
     0.1187
     0.0837
 
+
 result = 
     'KL distance: '    '0.027233'    'Confidence: '    [636]
 </pre>
+
 
 #### File Structures
 
