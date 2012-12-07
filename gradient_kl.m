@@ -87,8 +87,7 @@ while flag == 1
                     tempA(i,j) = A(i,j);
                     continue
                 end
-                % it is possible that L(s,i) == 0
-%                 gradientAij = F(s,j)*log(f(i)/L(s,i)) + F(s,j);
+
                 selfItem = (F(s, j) * numerator - f(i) * F(s,j)) / ...
                     (numerator ^ 2) * (log(f(i) / numerator / L(s,i)) + 1); 
                 otherItem = 0;
