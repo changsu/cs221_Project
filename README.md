@@ -120,14 +120,18 @@ result =
 
 
 #### File Structures
-<ul>
-<li>`feature_matrix.txt` - 268 * 30 matrix with row as sentence column as features</li>
-</ul>
+`feature_matrix.txt` - 268 * 30 matrix with row as sentence column as features
+
 `feature_name.txt` - 30 dimension vector that store name of each features
+
 `label_dependent.txt` - 162 * 7 matrix with row as each sentence column as error type probabilities. For each row, all columns reflects the distribution of error types, thus summing up to 1
+
 `label_independent.txt` - 162 * 7 matrix with row as each sentence, column as error type probabilities. However, it's differenct from `label_dependent.txt` file in a sense that there is no constraint among columns for a particular row and they are independent with each other. 
+
 `sentence_map.txt` - store map between sentence number and total # of scripts genearted from that sentence
+
 `sample_kl.fig` - query result figure of KL method
+
 `sample_lr.fig` - query result figure of LR method		
 		      			  
 
