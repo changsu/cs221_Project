@@ -1,4 +1,8 @@
 CS221 Final Project Documentation
+
+### Report
+Please find our final report [here] (http://www.stanford.edu/~changsu/cs221/final_report.pdf)
+
 ### Author: 
 <ul>
 <li>Qingyi Meng (qingyim@stanford.edu)</li>
