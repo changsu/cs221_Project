@@ -16,6 +16,8 @@ method = 'lr';
 
 % chunk feature matrix to be consisitent with label matrix
 F = feature_matrix(1:size(label_independent, 1), :);
+% select grammatical feature
+F = F(:, 1:10);
 L = label_independent;
 
 % build sentence number map
@@ -48,13 +50,19 @@ seperator = size(F,2) + 1;
 L = FL(:, seperator : seperator + size(L,2) - 1);
 sentenceMap = sentenceMap(randIndex, :);
 
+% normalize number of scripts and serve as weights of
+% weighted LR
+numScripts = cell2mat(sentenceMap(:,2));
+numScripts = numScripts / sum(numScripts);
+
+
 %% declare constants
 featureNum = size(F, 2); % number of features
 changeType = size(L, 2); % number of types of operations
 sentenceNum = size(F, 1); % number of sentences
 trainNum = round(sentenceNum * 0.7); % number of sentences for training
 testNum = sentenceNum - trainNum;
-ita = 1e-4;  % convergence condition
+ita = 1e-6;  % convergence condition
 alpha = 8e-5;  % stepsize
 alpha_fine = 8e-7; % finer stepsize
 numRand = 5; % number of runs to compute random result 
@@ -80,7 +88,7 @@ while flag == 1
         for i = 1:changeType
             for j = 1:featureNum
                 % it is possible that L(s,i) == 0
-                gradientAij = 2 * (f(i) - L(s,i)) * F(s,j);
+                gradientAij = 2 * numScripts(s) * (f(i) - L(s,i)) * F(s,j);
                 gradientMatrix(i,j) = gradientAij;
                 tempA(i,j) = A(i,j)- alpha * gradientAij;
                 

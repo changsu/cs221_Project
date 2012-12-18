@@ -16,6 +16,8 @@ method = 'kl';
 
 % chunk feature matrix to be consisitent with label matrix
 F = feature_matrix(1:size(label_dependent, 1), :);
+% select grammatical feature
+F = F(:, 1:10);
 L = label_dependent;
 
 % build sentence number map
