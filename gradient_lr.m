@@ -16,7 +16,7 @@ method = 'lr';
 
 % chunk feature matrix to be consisitent with label matrix
 F = feature_matrix(1:size(label_independent, 1), :);
-% select grammatical feature
+% select grammatical feature rather then all 30 features
 F = F(:, 1:10);
 L = label_independent;
 
@@ -110,20 +110,20 @@ while flag == 1
     totalTestMSE = 0;
     for s1 = trainNum + 1 : sentenceNum
         f_result = A * F(s1,:)';
-        MSE = norm((f_result - L(s1,:)'),2);
+        MSE = numScripts(s1) * norm((f_result - L(s1,:)'),2);
         totalTestMSE = totalTestMSE + MSE;
     end
-    totalTestMSE = totalTestMSE/(sentenceNum - trainNum);
+%     totalTestMSE = totalTestMSE;
     MSEvecTest(n) = totalTestMSE;
     
     % afer updating A in one round, calculate total KL in training data
     totalTrainMSE = 0;
     for s1 = 1 : trainNum
         f_result = A * F(s1,:)';
-        MSE = norm((f_result - L(s1,:)'),2);
+        MSE = numScripts(s1) * norm((f_result - L(s1,:)'),2);
         totalTrainMSE = totalTrainMSE + MSE;
     end
-    totalTrainMSE = totalTrainMSE / (trainNum)
+%     totalTrainMSE = totalTrainMSE
     MSEvecTrain(n) = totalTrainMSE;
     
     if n > 1
