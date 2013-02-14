@@ -52,8 +52,8 @@ sentenceMap = sentenceMap(randIndex, :);
 
 % normalize number of scripts and serve as weights of
 % weighted LR
-numScripts = cell2mat(sentenceMap(:,2));
-numScripts = numScripts / sum(numScripts);
+numSentences = cell2mat(sentenceMap(:,2));
+numSentences = numSentences / sum(numSentences);
 
 
 %% declare constants
@@ -88,7 +88,7 @@ while flag == 1
         for i = 1:changeType
             for j = 1:featureNum
                 % it is possible that L(s,i) == 0
-                gradientAij = 2 * numScripts(s) * (f(i) - L(s,i)) * F(s,j);
+                gradientAij = 2 * numSentences(s) * (f(i) - L(s,i)) * F(s,j);
                 gradientMatrix(i,j) = gradientAij;
                 tempA(i,j) = A(i,j)- alpha * gradientAij;
                 
@@ -110,7 +110,7 @@ while flag == 1
     totalTestMSE = 0;
     for s1 = trainNum + 1 : sentenceNum
         f_result = A * F(s1,:)';
-        MSE = numScripts(s1) * norm((f_result - L(s1,:)'),2);
+        MSE = numSentences(s1) * norm((f_result - L(s1,:)'),2);
         totalTestMSE = totalTestMSE + MSE;
     end
 %     totalTestMSE = totalTestMSE;
@@ -120,7 +120,7 @@ while flag == 1
     totalTrainMSE = 0;
     for s1 = 1 : trainNum
         f_result = A * F(s1,:)';
-        MSE = numScripts(s1) * norm((f_result - L(s1,:)'),2);
+        MSE = numSentences(s1) * norm((f_result - L(s1,:)'),2);
         totalTrainMSE = totalTrainMSE + MSE;
     end
 %     totalTrainMSE = totalTrainMSE
